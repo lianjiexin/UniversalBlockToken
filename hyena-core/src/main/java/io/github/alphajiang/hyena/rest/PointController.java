@@ -32,20 +32,21 @@ import io.github.alphajiang.hyena.model.base.ObjectResponse;
 import io.github.alphajiang.hyena.model.dto.PointLogDto;
 import io.github.alphajiang.hyena.model.dto.PointRecDto;
 import io.github.alphajiang.hyena.model.dto.PointRecLogDto;
+import io.github.alphajiang.hyena.model.exception.HyenaNoPointException;
 import io.github.alphajiang.hyena.model.exception.HyenaParameterException;
+import io.github.alphajiang.hyena.model.exception.UnSupportedPointTypeException;
 import io.github.alphajiang.hyena.model.param.*;
 import io.github.alphajiang.hyena.model.po.PointPo;
 import io.github.alphajiang.hyena.model.type.SortOrder;
 import io.github.alphajiang.hyena.model.vo.PointLogBi;
 import io.github.alphajiang.hyena.model.vo.PointOpResult;
-import io.github.alphajiang.hyena.utils.CollectionUtils;
-import io.github.alphajiang.hyena.utils.DateUtils;
-import io.github.alphajiang.hyena.utils.LoggerHelper;
+import io.github.alphajiang.hyena.utils.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -90,6 +91,12 @@ public class PointController {
             @ApiParam(value = "用户ID") @RequestParam String uid,
             @ApiParam(value = "用户二级ID") @RequestParam(required = false) String subUid) {
         logger.info(LoggerHelper.formatEnterLog(request));
+
+        if (!StringUtils.equals("default",type)) {
+            String errMessage = "Point Type " + type + " is not supported";
+            logger.error(errMessage);
+            throw new UnSupportedPointTypeException(errMessage, Level.ERROR);
+        }
         var ret = this.pointMemCacheService.getPoint(type, uid, subUid, false);
         ObjectResponse<PointPo> res = new ObjectResponse<>(ret.getPointCache().getPoint());
         logger.info(LoggerHelper.formatLeaveLog(request));
