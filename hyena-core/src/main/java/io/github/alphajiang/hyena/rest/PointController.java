@@ -17,15 +17,13 @@
 
 package io.github.alphajiang.hyena.rest;
 
+import io.github.alphajiang.hyena.HyenaConstants;
 import io.github.alphajiang.hyena.aop.Idempotent;
 import io.github.alphajiang.hyena.biz.point.PointUsage;
 import io.github.alphajiang.hyena.biz.point.PointUsageBuilder;
 import io.github.alphajiang.hyena.biz.point.PointUsageFacade;
 import io.github.alphajiang.hyena.biz.point.strategy.PointMemCacheService;
-import io.github.alphajiang.hyena.ds.service.PointDs;
-import io.github.alphajiang.hyena.ds.service.PointLogDs;
-import io.github.alphajiang.hyena.ds.service.PointRecDs;
-import io.github.alphajiang.hyena.ds.service.PointRecLogDs;
+import io.github.alphajiang.hyena.ds.service.*;
 import io.github.alphajiang.hyena.model.base.BaseResponse;
 import io.github.alphajiang.hyena.model.base.ListResponse;
 import io.github.alphajiang.hyena.model.base.ObjectResponse;
@@ -57,6 +55,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @Api(value = "积分相关的接口", tags = "积分")
@@ -83,6 +82,9 @@ public class PointController {
     @Autowired
     private PointMemCacheService pointMemCacheService;
 
+    @Autowired
+    private PointTableDs pointTableDs;
+
     @ApiOperation(value = "获取积分信息")
     @GetMapping(value = "/getPoint")
     public ObjectResponse<PointPo> getPoint(
@@ -91,12 +93,7 @@ public class PointController {
             @ApiParam(value = "用户ID") @RequestParam String uid,
             @ApiParam(value = "用户二级ID") @RequestParam(required = false) String subUid) {
         logger.info(LoggerHelper.formatEnterLog(request));
-
-        if (!StringUtils.equals("default",type)) {
-            String errMessage = "Point Type " + type + " is not supported";
-            logger.error(errMessage);
-            throw new UnSupportedPointTypeException(errMessage, Level.ERROR);
-        }
+        
         var ret = this.pointMemCacheService.getPoint(type, uid, subUid, false);
         ObjectResponse<PointPo> res = new ObjectResponse<>(ret.getPointCache().getPoint());
         logger.info(LoggerHelper.formatLeaveLog(request));
