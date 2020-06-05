@@ -59,7 +59,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @Api(value = "积分相关的接口", tags = "积分")
-@RequestMapping(value = "/hyena/point", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/ubt/point", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PointController {
 
     private static final Logger logger = LoggerFactory.getLogger(PointController.class);
@@ -93,7 +93,7 @@ public class PointController {
             @ApiParam(value = "用户ID") @RequestParam String uid,
             @ApiParam(value = "用户二级ID") @RequestParam(required = false) String subUid) {
         logger.info(LoggerHelper.formatEnterLog(request));
-        
+
         var ret = this.pointMemCacheService.getPoint(type, uid, subUid, false);
         ObjectResponse<PointPo> res = new ObjectResponse<>(ret.getPointCache().getPoint());
         logger.info(LoggerHelper.formatLeaveLog(request));

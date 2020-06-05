@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @Api(value = "系统设置接口", tags = "系统")
-@RequestMapping(value = "/hyena/system", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/ubt/system", produces = MediaType.APPLICATION_JSON_VALUE)
 public class SystemController {
     private static final Logger logger = LoggerFactory.getLogger(SystemController.class);
 

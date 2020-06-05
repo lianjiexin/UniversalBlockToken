@@ -77,7 +77,7 @@ public class TestPointController extends HyenaTestBase {
     @Test
     public void test_getPoint() throws Exception {
 
-        RequestBuilder builder = MockMvcRequestBuilders.get("/hyena/point/getPoint")
+        RequestBuilder builder = MockMvcRequestBuilders.get("/ubt/point/getPoint")
                 .param("type", super.getPointType())
                 .param("uid", super.getUid());
 
@@ -99,7 +99,7 @@ public class TestPointController extends HyenaTestBase {
         param.setStart(0L).setSize(10);
 
 
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/listPoint")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/listPoint")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.toJsonString(param));
 
@@ -120,7 +120,7 @@ public class TestPointController extends HyenaTestBase {
         param.setType("invalid_type_test");
         param.setStart(0L).setSize(10);
 
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/listPoint")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/listPoint")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.toJsonString(param));
 
@@ -143,7 +143,7 @@ public class TestPointController extends HyenaTestBase {
         param.setPayTypes(List.of(super.getPayType(), 7, 8, 9));
         param.setStart(0L).setSize(10);
 
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/listPointLog")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/listPointLog")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.toJsonString(param));
 
@@ -164,7 +164,7 @@ public class TestPointController extends HyenaTestBase {
         param.setType(super.getPointType());
         param.setUid(super.getUid());
 
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/listPointLogBi")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/listPointLogBi")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.toJsonString(param));
 
@@ -183,7 +183,7 @@ public class TestPointController extends HyenaTestBase {
         Thread.sleep(100L);
         ListPointRecParam param = new ListPointRecParam();
         param.setType(super.getPointType());
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/listPointRecord")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/listPointRecord")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.toJsonString(param));
 
@@ -201,7 +201,7 @@ public class TestPointController extends HyenaTestBase {
     public void test_listPointRecordLog() throws Exception {
         ListPointRecLogParam param = new ListPointRecLogParam();
         param.setType(super.getPointType());
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/listPointRecordLog")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/listPointRecordLog")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.toJsonString(param));
 
@@ -229,7 +229,7 @@ public class TestPointController extends HyenaTestBase {
         extra.put("aaa", "bbbb");
         extra.put("ccc", 123);
         param.setExtra(JsonUtils.toJsonString(extra));
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/increase")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/increase")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.toJsonString(param));
 
@@ -248,7 +248,7 @@ public class TestPointController extends HyenaTestBase {
         buf.append("{").append("\"uid\":\"").append(super.getUid()).append("\",")
                 .append("\"point\":\"").append("abcd").append("\"")
                 .append("}");
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/increase")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/increase")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(buf.toString());
 
@@ -265,7 +265,7 @@ public class TestPointController extends HyenaTestBase {
                 .append("\"point\":\"").append(123).append("\",")
                 .append("\"type\":null")
                 .append("}");
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/increase")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/increase")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(buf.toString());
 
@@ -283,7 +283,7 @@ public class TestPointController extends HyenaTestBase {
         param.setUid(super.getUid());
         param.setSubUid(super.getSubUid());
         param.setPoint(BigDecimal.valueOf(1L));
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/decrease")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/decrease")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.toJsonString(param));
 
@@ -303,7 +303,7 @@ public class TestPointController extends HyenaTestBase {
         param.setUid(super.getUid());
         param.setSubUid(super.getSubUid());
         param.setPoint(BigDecimal.valueOf(1L));
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/freeze")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/freeze")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.toJsonString(param));
 
@@ -327,7 +327,7 @@ public class TestPointController extends HyenaTestBase {
         param.setUid(super.getUid());
         param.setSubUid(super.getSubUid());
         param.setPoint(BigDecimal.valueOf(9L));
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/decreaseFrozen")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/decreaseFrozen")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.toJsonString(param));
 
@@ -356,7 +356,7 @@ public class TestPointController extends HyenaTestBase {
         param.setSubUid(super.getSubUid());
         param.setUnfreezePoint(BigDecimal.valueOf(5L)); // 要做解冻的部分
         param.setPoint(BigDecimal.valueOf(9L)); // 要消费的部分
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/decreaseFrozen")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/decreaseFrozen")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.toJsonString(param));
 
@@ -382,7 +382,7 @@ public class TestPointController extends HyenaTestBase {
         param.setUid(super.getUid());
         param.setSubUid(super.getSubUid());
         param.setPoint(BigDecimal.valueOf(9L));
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/unfreeze")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/unfreeze")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.toJsonString(param));
 
@@ -404,7 +404,7 @@ public class TestPointController extends HyenaTestBase {
         param.setSubUid(super.getSubUid());
         param.setCost(BigDecimal.valueOf(5L)); // 退款部分的成本
         param.setPoint(BigDecimal.valueOf(10L)); // 退款的部分
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/refund")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/refund")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.toJsonString(param));
 
@@ -435,7 +435,7 @@ public class TestPointController extends HyenaTestBase {
         param.setSubUid(super.getSubUid());
         param.setPoint(rec.getAvailable());
         param.setRecId(rec.getId());
-        RequestBuilder builder = MockMvcRequestBuilders.post("/hyena/point/cancel")
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/cancel")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtils.toJsonString(param));
 
@@ -456,7 +456,7 @@ public class TestPointController extends HyenaTestBase {
         Calendar end = Calendar.getInstance();
         end.add(Calendar.DATE, 1);
 
-        RequestBuilder builder = MockMvcRequestBuilders.get("/hyena/point/getIncreasedPoint")
+        RequestBuilder builder = MockMvcRequestBuilders.get("/ubt/point/getIncreasedPoint")
                 .param("type", super.getPointType())
                 .param("uid", super.getUid())
                 .param("start", DateUtils.toYyyyMmDdHhMmSs(start))
