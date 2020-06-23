@@ -72,7 +72,7 @@ public class PointMemCacheService {
     }
 
     private String formatKey(String type, String uid, String subUid) {
-        if(subUid == null) {
+        if(subUid == null || subUid.isBlank() || subUid.isEmpty()) {
             return type + "-" + uid;
         }else {
             return type + "-" + uid + "-" + subUid;
