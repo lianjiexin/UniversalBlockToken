@@ -17,7 +17,7 @@ ext {
     mybatisStarterVersion = '2.1.0'
     swaggerVersion = '2.9.2'
     lombokVersion = '1.18.10'
-
+    web3jVersion = '3.4.0'
 }
 
 

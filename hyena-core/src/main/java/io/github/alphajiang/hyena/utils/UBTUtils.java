@@ -37,6 +37,8 @@ public class UBTUtils {
      * @param value           转账金额
      * @param privateKey      转账这私钥
      * @param contractAddress 代币合约地址
+     * @param networkAddress 网络地址
+     * @param decimal 余额位数
      * @return 交易哈希
      * @throws ExecutionException 执行异常
      * @throws InterruptedException 中断异常
