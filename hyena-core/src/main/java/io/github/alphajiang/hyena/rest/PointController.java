@@ -51,10 +51,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @RestController
@@ -84,6 +87,13 @@ public class PointController {
 
     @Autowired
     private PointTableDs pointTableDs;
+
+    private UBTConnector ubtConnector;
+
+    PointController()
+    {
+        ubtConnector = new UBTConnector();
+    }
 
     @ApiOperation(value = "获取积分信息")
     @GetMapping(value = "/getPoint")
@@ -179,11 +189,46 @@ public class PointController {
     @ApiOperation(value = "增加用户积分")
     @PostMapping(value = "/increase")
     public ObjectResponse<PointPo> increasePoint(HttpServletRequest request,
-                                                 @RequestBody @NotNull PointIncreaseParam param) {
+                                                 @RequestBody @NotNull PointIncreaseParam param) throws InterruptedException, ExecutionException,IOException {
         long startTime = System.nanoTime();
         logger.info(LoggerHelper.formatEnterLog(request, false) + " param = {}", param);
+
         PointUsage usage = PointUsageBuilder.fromPointIncreaseParam(param);
         PointPo ret = this.pointUsageFacade.increase(usage);
+
+        if(StringUtils.equals(param.getType(),"ubt")){
+            logger.info("Type is UBT, sync offline point to online");
+
+            ubtConnector.depositUBT(param.getName(),param.getPoint(),18);
+        }
+
+        ObjectResponse<PointPo> res = new ObjectResponse<>(ret);
+        logger.info(LoggerHelper.formatLeaveLog(request));
+        debugPerformance(request, startTime);
+        return res;
+    }
+
+    @Idempotent(name = "create-account")
+    @ApiOperation(value = "创建用户帐号")
+    @PostMapping(value = "/create")
+    public ObjectResponse<PointPo> createAccount(HttpServletRequest request,
+                                                 @RequestBody @NotNull PointIncreaseParam param) throws InterruptedException, ExecutionException,IOException {
+        long startTime = System.nanoTime();
+        logger.info(LoggerHelper.formatEnterLog(request, false) + " param = {}", param);
+
+       //Create common point account，which won't have a subUid
+        PointUsage usage = PointUsageBuilder.fromPointIncreaseParam(param);
+        PointPo ret = this.pointUsageFacade.increase(usage);
+
+        //Create UBT account, set  UBT account address as the subUid
+        String acctAddresss = ubtConnector.createNewAccount();
+        logger.info("Create new UBT Account: " + acctAddresss);
+        param.setName(acctAddresss); // store UBT account address at Name
+        param.setType("ubt");
+        param.setPoint(new BigDecimal(0));
+        usage = PointUsageBuilder.fromPointIncreaseParam(param);
+        ret = this.pointUsageFacade.increase(usage);
+
         ObjectResponse<PointPo> res = new ObjectResponse<>(ret);
         logger.info(LoggerHelper.formatLeaveLog(request));
         debugPerformance(request, startTime);

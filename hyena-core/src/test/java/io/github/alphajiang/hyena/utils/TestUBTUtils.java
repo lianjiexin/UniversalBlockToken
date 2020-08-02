@@ -29,11 +29,11 @@ import java.util.concurrent.ExecutionException;
 
 public class TestUBTUtils {
 
-    //@Test
+    @Test
     public void testGetBalance() throws IOException {
         String networkAddress = UBTConstants.localNetworkPrefix;
         System.out.println("Check Balance on network:" + networkAddress);
-        BigDecimal ret = UBTUtils.getBalance(UBTTestConstants.localTestAddress1, UBTTestConstants.localJVMContractAddress,
+        BigDecimal ret = UBTUtils.getBalance(UBTTestConstants.localTestAddress1, UBTConstants.localContractAddress,
                 networkAddress);
         String strReturnValue = ret.toPlainString();
         System.out.println("Current Balance is : " + strReturnValue);
@@ -45,7 +45,7 @@ public class TestUBTUtils {
 
         String hash = UBTUtils.transferERC20Token(UBTTestConstants.localTestAddress0, UBTTestConstants.localTestAddress1,
                 BigInteger.valueOf(100),
-                UBTTestConstants.priKey_localTestAddress0,UBTConstants.localNetworkPrefix,UBTTestConstants.contractAddress,18);
+                UBTTestConstants.priKey_localTestAddress0,UBTConstants.localNetworkPrefix,UBTConstants.localContractAddress,18);
 
         System.out.println("Return Hash Value is : " + hash);
         Assertions.assertNotNull(hash);

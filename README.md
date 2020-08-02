@@ -9,7 +9,7 @@
 Universal Block Token (通配权) 权证服务
 ## 通配权积分相关接口
 更多接口介绍可查看swagger文档. swagger-ui的访问URL /swagger-ui.html
- 
+
 ### 增加通配权
 + 给指定用户增加通配权,调用成功后返回该用户的通配权明细.
 + URL: /ubt/point/increase
@@ -26,6 +26,7 @@ Universal Block Token (通配权) 权证服务
 | expireTime | string | 过期时间. 不传表示永不过期. | | 格式为 "yyyy-MM-dd HH:mm:ss". <br />如: 2018-10-25 18:34:32 表示2018年10月25日18点34分32秒过期 |
 | tag | string | 自定义标签 |  | |
 | note | string | 备注 | ||
+| isNewAccount | boolean | 是否新帐号
  
 + 请求消息示例
 ```
