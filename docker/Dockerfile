@@ -20,7 +20,7 @@ RUN echo $TZ > /etc/timezone && \
 RUN apt install -y openjdk-11-jre-headless redis-server
 
 
-EXPOSE 8080
+EXPOSE 8089
 
 ADD start.sh $APP_PATH/
 ADD hyena.jar $APP_PATH/

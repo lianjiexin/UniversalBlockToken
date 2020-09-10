@@ -3,7 +3,7 @@ app:
 
 server:
   address: 0.0.0.0
-  port: 8080
+  port: 8089
   use-forward-headers: true
   compression.enabled: true
 

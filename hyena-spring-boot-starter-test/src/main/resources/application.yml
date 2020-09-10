@@ -3,7 +3,7 @@ app:
 
 server:
   address: 0.0.0.0
-  port: 8080
+  port: 8089
   use-forward-headers: true
   compression.enabled: true
 
@@ -37,7 +37,8 @@ spring:
     username: test
     password: 123456
     # connect to host.docker.internal instead of 127.0.0.1 or localhost, in order to connect from docker to mysql on localhost
-    url: jdbc:mysql://host.docker.internal:3306/hyena?useUnicode=true&allowPublicKeyRetrieval=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&allowMultiQueries=true
+    url: jdbc:mysql://127.0.0.1:3306/hyena?useUnicode=true&allowPublicKeyRetrieval=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&allowMultiQueries=true
+    #url: jdbc:mysql://47.96.253.169:3306/hyena?useUnicode=true&allowPublicKeyRetrieval=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&allowMultiQueries=true
     initialPoolSize: 1
     minPoolSize: 1
     maxPoolSize: 10
@@ -46,7 +47,7 @@ spring:
     checkoutTimeout: 30000
   redis:
     database: 3
-    host: redis # run from docker, use redis not localhost to refer to the redis-instance inside docker container
+    host: localhost # run from docker, use redis not localhost to refer to the redis-instance inside docker container
     port: 6379
     password:
     timeout: 4000

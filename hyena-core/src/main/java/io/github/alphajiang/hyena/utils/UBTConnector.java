@@ -39,12 +39,14 @@ public class UBTConnector {
 
     private static String defaultUserPassword = "123456";
 
-    private static String contractAddress = "0x16247c2cCb17124247DA0bc2631de1330947ca4a";
+    private static String contractAddress = UBTConstants.dptContractAddress;
 
     //ubt is transferred from this address to other client address;
-    private static String primaryAcctAddress = "0x2707774cbfa6d7ea1F82d12A6c3E14597Ce1a199";
+    private static String primaryAcctAddress = UBTConstants.dptPrimaryAcctAddress;
 
-    private static String priKey_primaryAcctAddress = "9914d8187ecfafff4d949fc5c898d396813eb4d9b392a6c1524dad08b5ddb9d3";
+    private static String priKey_primaryAcctAddress = UBTConstants.dptPriKey_primaryAcctAddress;
+
+    private static String networkPrefix = UBTConstants.dptNetworkPrefix;
 
 
     public UBTConnector(){
@@ -54,7 +56,7 @@ public class UBTConnector {
 
     public void init() {
         //TODO : refactor to generalize the use of contract address, not limit to local contract address;
-        this.web3j = Admin.build(new HttpService(UBTConstants.localNetworkPrefix + contractAddress));
+        this.web3j = Admin.build(new HttpService(networkPrefix + contractAddress));
 
     }
 
@@ -80,13 +82,11 @@ public class UBTConnector {
 
     /**
      * erc20代币转账
-     *
+     * @param web3j           Web3j
      * @param from            转账地址
      * @param to              收款地址
      * @param value           转账金额
-     * @param privateKey      转账这私钥
-     * @param contractAddress 代币合约地址
-     * @param networkAddress 网络地址
+     * @param privateKey      转账地址私钥
      * @param decimal 余额位数
      * @return 交易哈希
      * @throws ExecutionException 执行异常

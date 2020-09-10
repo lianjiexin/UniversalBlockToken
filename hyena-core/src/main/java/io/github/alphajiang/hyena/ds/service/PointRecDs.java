@@ -113,6 +113,7 @@ public class PointRecDs {
      *
      * @param param 参数
      * @param pid   当前积分对象ID
+     * @param  seqNum 交易序列号
      * @return 返回积分记录
      */
     @Transactional

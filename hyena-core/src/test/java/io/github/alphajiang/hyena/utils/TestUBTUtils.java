@@ -27,9 +27,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+/*
+For temporary testing purpose, not the real unit tests.
+ */
 public class TestUBTUtils {
 
-    @Test
+    //@Test
     public void testGetBalance() throws IOException {
         String networkAddress = UBTConstants.localNetworkPrefix;
         System.out.println("Check Balance on network:" + networkAddress);
