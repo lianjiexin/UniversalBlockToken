@@ -1,6 +1,10 @@
 package io.github.alphajiang.hyena.utils;
 
-import io.github.alphajiang.hyena.rest.PointController;
+import io.github.alphajiang.hyena.ds.service.UbtAccountDs;
+import io.github.alphajiang.hyena.model.po.UbtAccountPo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
@@ -10,11 +14,9 @@ import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
-import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.NewAccountIdentifier;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.response.EthGasPrice;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
@@ -23,6 +25,7 @@ import org.web3j.utils.Numeric;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -31,42 +34,89 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
+@Service
 public class UBTConnector {
 
     private static final Logger logger = LoggerFactory.getLogger(UBTConnector.class);
 
     private Admin web3j;
 
+    @Autowired
+    private UbtAccountDs ubtAccountDs;
+
     private static String defaultUserPassword = "123456";
 
-    private static String contractAddress = UBTConstants.dptContractAddress;
+    @Value("${spring.ubt.contractAddress}")
+    private String contractAddress;
 
-    //ubt is transferred from this address to other client address;
-    private static String primaryAcctAddress = UBTConstants.dptPrimaryAcctAddress;
+    @Value("${spring.ubt.primaryAcctAddress}")
+    private String primaryAcctAddress;
 
-    private static String priKey_primaryAcctAddress = UBTConstants.dptPriKey_primaryAcctAddress;
+    @Value("${spring.ubt.primaryAcctpriKey}")
+    private String primaryAcctpriKey;
 
-    private static String networkPrefix = UBTConstants.dptNetworkPrefix;
+    @Value("${spring.ubt.networkPrefix}")
+    private String networkPrefix;
 
 
     public UBTConnector(){
-        init();
+
 
     }
 
-    public void init() {
-        //TODO : refactor to generalize the use of contract address, not limit to local contract address;
-        this.web3j = Admin.build(new HttpService(networkPrefix + contractAddress));
+    @PostConstruct
+    public void init()
+    {
+        String url = networkPrefix + contractAddress;
+        logger.info("web3j connecting to : " + url);
+        this.web3j = Admin.build(new HttpService(url));
 
     }
 
-    public String depositUBT(String toAddress, BigDecimal value, int decimal) throws InterruptedException, ExecutionException, IOException {
+
+    /**
+     * Deposit UBT from primary account address to clientAddress
+     * @param clientId clientId to retrieve client blockChain Address
+     * @param value value of UBT
+     * @param decimal decimal to support
+     * @return transaction Hash
+     * @throws InterruptedException if the Execution is interrupted for some reason
+     * @throws ExecutionException general execution exception
+     * @throws IOException all IO exception
+     */
+    public String depositUBT(String clientId, BigDecimal value, int decimal) throws InterruptedException, ExecutionException, IOException {
         logger.info("primaryAcctAddress:" + primaryAcctAddress);
-        logger.info("toAddress:" + toAddress);
+        logger.info("clientId:" + clientId);
         logger.info("value:" + value);
-        logger.info("priKey_primaryAcctAddress: " + priKey_primaryAcctAddress);
+        logger.info("priKey_primaryAcctAddress: " + primaryAcctpriKey);
 
-        String hash = transferERC20Token(web3j, primaryAcctAddress,toAddress,value,priKey_primaryAcctAddress,18);
+        UbtAccountPo ubtAccount = ubtAccountDs.getUbtAccount(clientId);
+        String toAddress = ubtAccount.getBlockchainAccount();
+        logger.info("ToAddress: " + toAddress);
+
+        String hash = transferERC20Token(web3j, primaryAcctAddress,toAddress,value, primaryAcctpriKey,18);
+        logger.info("transaction hash: " + hash);
+        return hash;
+    }
+
+    /**
+     * return UBT from client Account to primary account address
+     * @param clientId Id for the client
+     * @param value value of UBT
+     * @param decimal decimal to support
+     * @return transaction Hash
+     * @throws InterruptedException if the Execution is interrupted for some reason
+     * @throws ExecutionException general execution exception
+     * @throws IOException all IO exception
+     */
+    public String returnUBT(String clientId, BigDecimal value, int decimal) throws InterruptedException, ExecutionException, IOException {
+
+        logger.info("clientId:" + clientId);
+        logger.info("value:" + value);
+
+        UbtAccountPo ubtAccount = ubtAccountDs.getUbtAccount(clientId);
+
+        String hash = transferERC20Token(web3j, ubtAccount.getBlockchainAccount(),primaryAcctAddress,value,ubtAccount.getPriKey(),18);
         logger.info("transaction hash: " + hash);
         return hash;
     }
@@ -93,8 +143,9 @@ public class UBTConnector {
      * @throws InterruptedException 中断异常
      * @throws IOException IO 异常
      */
-    public static String transferERC20Token(Admin web3j,String from, String to, BigDecimal value, String privateKey,int decimal) throws ExecutionException, InterruptedException, IOException {
-        //Web3j web3j = Web3j.build(new HttpService(networkAddress + contractAddress));
+    public String transferERC20Token(Admin web3j,String from, String to, BigDecimal value, String privateKey,int decimal) throws ExecutionException, InterruptedException, IOException {
+        logger.info("fromAddress: " + from + ",\t toAddress: "
+                + to + ",\t value:" + value + ",\t privateKey:" + privateKey + ",\t decimal:" + decimal);
         //加载转账所需的凭证，用私钥
         Credentials credentials = Credentials.create(privateKey);
         //获取nonce，交易笔数

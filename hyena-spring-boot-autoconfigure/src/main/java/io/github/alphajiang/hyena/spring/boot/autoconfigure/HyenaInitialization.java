@@ -20,6 +20,7 @@ package io.github.alphajiang.hyena.spring.boot.autoconfigure;
 import io.github.alphajiang.hyena.HyenaConstants;
 import io.github.alphajiang.hyena.ds.service.PointTableDs;
 import io.github.alphajiang.hyena.ds.service.SysPropertyDs;
+import io.github.alphajiang.hyena.ds.service.UbtAccountDs;
 import io.github.alphajiang.hyena.ds.service.UpgradeSchemaDs;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class HyenaInitialization {
     private SysPropertyDs sysPropertyDs;
 
     @Autowired
+    private UbtAccountDs ubtAccountDs;
+
+    @Autowired
     private PointTableDs pointTableDs;
 
     @Autowired
@@ -51,6 +55,8 @@ public class HyenaInitialization {
         if (dbSqlVer != HyenaConstants.SQL_VERSION) {
             sysPropertyDs.setSqlVersion(HyenaConstants.SQL_VERSION);
         }
+
+        ubtAccountDs.createUbtAccountTable();
     }
 
     public int upgradeSql() {

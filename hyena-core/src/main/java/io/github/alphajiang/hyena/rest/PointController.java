@@ -88,11 +88,12 @@ public class PointController {
     @Autowired
     private PointTableDs pointTableDs;
 
+    @Autowired
     private UBTConnector ubtConnector;
 
     PointController()
     {
-        ubtConnector = new UBTConnector();
+
     }
 
     @ApiOperation(value = "获取积分信息")
@@ -198,8 +199,11 @@ public class PointController {
 
         if(StringUtils.equals(param.getType(),"ubt")){
             logger.info("Type is UBT, sync offline point to online");
+            String uid = param.getUid();
+            BigDecimal value = param.getPoint();
+            logger.info("UID :" + uid + "\t value: " + value);
 
-            ubtConnector.depositUBT(param.getName(),param.getPoint(),18);
+            ubtConnector.depositUBT(uid,value,18);
         }
 
         ObjectResponse<PointPo> res = new ObjectResponse<>(ret);
@@ -239,12 +243,19 @@ public class PointController {
     @ApiOperation(value = "消费用户积分")
     @PostMapping(value = "/decrease")
     public ObjectResponse<PointOpResult> decreasePoint(HttpServletRequest request,
-                                                       @RequestBody PointDecreaseParam param) {
+                                                       @RequestBody PointDecreaseParam param) throws InterruptedException, ExecutionException,IOException {
         long startTime = System.nanoTime();
         logger.info(LoggerHelper.formatEnterLog(request, false) + " param = {}", param);
         PointUsage usage = PointUsageBuilder.fromPointOpParam(param);
         usage.setRecId(param.getRecId());
         PointOpResult ret = this.pointUsageFacade.decrease(usage);
+
+        if(StringUtils.equals(param.getType(),"ubt")){
+            logger.info("Type is UBT, sync offline point to online");
+
+            ubtConnector.returnUBT(param.getUid(),param.getPoint(),18);
+        }
+
         ObjectResponse<PointOpResult> res = new ObjectResponse<>(ret);
         logger.info(LoggerHelper.formatLeaveLog(request));
         debugPerformance(request, startTime);

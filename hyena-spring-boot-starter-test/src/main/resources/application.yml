@@ -57,3 +57,12 @@ spring:
       max-idle: 200
       max-wait: 10000
       min-idle: 0
+  ubt:
+    #networkPrefix: http://47.96.253.169:8545/
+    #contractAddress: '0x819a40566475672E4395bF4dF274C420ABfeb6E1'
+    #primaryAcctAddress: '0xa83B181067f77C787b748DF16F1338C23E20fFAB'
+    #primaryAcctpriKey: 0c28bc97f7670691e9e5cca7142e40f10131ba463e790dd4e6fe6eb871efe8b2
+    networkPrefix: http://localhost:8545/
+    contractAddress: '0x16247c2cCb17124247DA0bc2631de1330947ca4a'
+    primaryAcctAddress: '0x79C15610db6Bb73f79195b6C2C87649622916776'
+    primaryAcctpriKey: aed3e51be7eef5c2bdb5efa24d2fce030c060dc229cf20e511bb5f861c9358c6

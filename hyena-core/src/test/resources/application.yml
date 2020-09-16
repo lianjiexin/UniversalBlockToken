@@ -45,3 +45,9 @@ spring:
     acquireIncrement: 1
     maxIdleTime: 10
     checkoutTimeout: 30000
+  ubt:
+    #Local Settings
+    networkPrefix: http://localhost:8545/
+    contractAddress: '0x16247c2cCb17124247DA0bc2631de1330947ca4a'
+    primaryAcctAddress: '0x79C15610db6Bb73f79195b6C2C87649622916776'
+    primaryAcctpriKey: aed3e51be7eef5c2bdb5efa24d2fce030c060dc229cf20e511bb5f861c9358c6
