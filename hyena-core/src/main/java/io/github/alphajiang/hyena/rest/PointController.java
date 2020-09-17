@@ -35,6 +35,7 @@ import io.github.alphajiang.hyena.model.exception.HyenaParameterException;
 import io.github.alphajiang.hyena.model.exception.UnSupportedPointTypeException;
 import io.github.alphajiang.hyena.model.param.*;
 import io.github.alphajiang.hyena.model.po.PointPo;
+import io.github.alphajiang.hyena.model.po.UbtAccountPo;
 import io.github.alphajiang.hyena.model.type.SortOrder;
 import io.github.alphajiang.hyena.model.vo.PointLogBi;
 import io.github.alphajiang.hyena.model.vo.PointOpResult;
@@ -111,6 +112,20 @@ public class PointController {
         return res;
     }
 
+    @ApiOperation(value = "获取UBT账户信息")
+    @GetMapping(value = "/getUbtAccount")
+    public ObjectResponse<UbtAccountPo> getUbtAccount(
+            HttpServletRequest request,
+            @ApiParam(value = "用户ID") @RequestParam String uid,
+            @ApiParam(value = "用户二级ID") @RequestParam(required = false) String subUid) {
+        logger.info(LoggerHelper.formatEnterLog(request));
+
+        UbtAccountPo ret = this.ubtConnector.getUbtAccountPo(uid);
+
+        ObjectResponse<UbtAccountPo> res = new ObjectResponse<UbtAccountPo>(ret);
+        logger.info(LoggerHelper.formatLeaveLog(request));
+        return res;
+    }
 
     @ApiOperation(value = "获取积分列表")
     @PostMapping(value = "/listPoint")

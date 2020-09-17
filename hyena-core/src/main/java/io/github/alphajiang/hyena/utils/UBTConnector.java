@@ -99,6 +99,11 @@ public class UBTConnector {
         return hash;
     }
 
+    public UbtAccountPo getUbtAccountPo(String uid)
+    {
+        return ubtAccountDs.getUbtAccount(uid);
+    }
+
     /**
      * return UBT from client Account to primary account address
      * @param clientId Id for the client
