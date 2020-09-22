@@ -6,7 +6,10 @@ server:
   port: 8089
   use-forward-headers: true
   compression.enabled: true
-
+  ssl:
+    key-store: classpath:4534315_ubt.kluvy.com.pfx
+    key-store-password: Wp6UaoDT
+    keyStoreType: PKCS12
 
 management:
   context-path: /admin
@@ -59,9 +62,9 @@ spring:
       min-idle: 0
   ubt:
     networkPrefix: http://47.96.253.169:8545/
-    contractAddress: '0x819a40566475672E4395bF4dF274C420ABfeb6E1'
-    primaryAcctAddress: '0xa83B181067f77C787b748DF16F1338C23E20fFAB'
-    primaryAcctpriKey: 0c28bc97f7670691e9e5cca7142e40f10131ba463e790dd4e6fe6eb871efe8b2
+    contractAddress: '0x67F5b2868D1D93493a523750A9082Bca300bE40F'
+    primaryAcctAddress: '0x8080690959677306Bd7BfcA3A6583C6582481C81'
+    primaryAcctpriKey: 4c474defc72b6c7c925f616d149fbaa6e4789815d74b4d99d067c74f9699c68c
     #networkPrefix: http://localhost:8545/
     #contractAddress: '0x16247c2cCb17124247DA0bc2631de1330947ca4a'
     #primaryAcctAddress: '0x79C15610db6Bb73f79195b6C2C87649622916776'
