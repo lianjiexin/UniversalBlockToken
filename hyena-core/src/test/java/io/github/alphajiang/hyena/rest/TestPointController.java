@@ -31,6 +31,7 @@ import io.github.alphajiang.hyena.model.dto.PointRecDto;
 import io.github.alphajiang.hyena.model.dto.PointRecLogDto;
 import io.github.alphajiang.hyena.model.param.*;
 import io.github.alphajiang.hyena.model.po.PointPo;
+import io.github.alphajiang.hyena.model.po.UidRegistryPo;
 import io.github.alphajiang.hyena.model.type.PointOpType;
 import io.github.alphajiang.hyena.model.vo.PointLogBi;
 import io.github.alphajiang.hyena.model.vo.PointOpResult;
@@ -87,6 +88,40 @@ public class TestPointController extends HyenaTestBase {
 
         });
         PointPo ret = res.getData();
+        Assertions.assertNotNull(ret);
+    }
+
+    @Test
+    public void test_getUidRegistry() throws Exception {
+
+        RequestBuilder builder = MockMvcRequestBuilders.get("/ubt/point/getUidRegistry")
+                .param("registerCode", super.getRegisterCode());
+
+
+        String resBody = mockMvc.perform(builder).andReturn().getResponse().getContentAsString();
+        logger.info("response = {}", resBody);
+        ObjectResponse<UidRegistryPo> res = JsonUtils.fromJson(resBody, new TypeReference<ObjectResponse<UidRegistryPo>>() {
+
+        });
+        UidRegistryPo ret = res.getData();
+        Assertions.assertNotNull(ret);
+    }
+
+    @Test
+    public void test_registerUid() throws Exception {
+
+        RequestBuilder builder = MockMvcRequestBuilders.get("/ubt/point/registerUid")
+                .param("registerCode", super.getRegisterCode())
+                .param("uid",super.getUid())
+                .param("password",super.getPassword());
+
+
+        String resBody = mockMvc.perform(builder).andReturn().getResponse().getContentAsString();
+        logger.info("response = {}", resBody);
+        ObjectResponse<UidRegistryPo> res = JsonUtils.fromJson(resBody, new TypeReference<ObjectResponse<UidRegistryPo>>() {
+
+        });
+        UidRegistryPo ret = res.getData();
         Assertions.assertNotNull(ret);
     }
 

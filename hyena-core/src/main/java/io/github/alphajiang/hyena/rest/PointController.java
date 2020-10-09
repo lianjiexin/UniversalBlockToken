@@ -30,12 +30,11 @@ import io.github.alphajiang.hyena.model.base.ObjectResponse;
 import io.github.alphajiang.hyena.model.dto.PointLogDto;
 import io.github.alphajiang.hyena.model.dto.PointRecDto;
 import io.github.alphajiang.hyena.model.dto.PointRecLogDto;
-import io.github.alphajiang.hyena.model.exception.HyenaNoPointException;
 import io.github.alphajiang.hyena.model.exception.HyenaParameterException;
-import io.github.alphajiang.hyena.model.exception.UnSupportedPointTypeException;
 import io.github.alphajiang.hyena.model.param.*;
 import io.github.alphajiang.hyena.model.po.PointPo;
 import io.github.alphajiang.hyena.model.po.UbtAccountPo;
+import io.github.alphajiang.hyena.model.po.UidRegistryPo;
 import io.github.alphajiang.hyena.model.type.SortOrder;
 import io.github.alphajiang.hyena.model.vo.PointLogBi;
 import io.github.alphajiang.hyena.model.vo.PointOpResult;
@@ -45,7 +44,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -54,12 +52,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 @RestController
 @Api(value = "积分相关的接口", tags = "积分")
@@ -92,6 +88,9 @@ public class PointController {
     @Autowired
     private UBTConnector ubtConnector;
 
+    @Autowired
+    private UidRegistryDs uidRegistryDs;
+
     PointController()
     {
 
@@ -116,13 +115,103 @@ public class PointController {
     @GetMapping(value = "/getUbtAccount")
     public ObjectResponse<UbtAccountPo> getUbtAccount(
             HttpServletRequest request,
-            @ApiParam(value = "用户ID") @RequestParam String uid,
+            @ApiParam(value = "注册码") @RequestParam String registerCode,
             @ApiParam(value = "用户二级ID") @RequestParam(required = false) String subUid) {
         logger.info(LoggerHelper.formatEnterLog(request));
 
-        UbtAccountPo ret = this.ubtConnector.getUbtAccountPo(uid);
+        UbtAccountPo ret = this.ubtConnector.getUbtAccountPo(registerCode);
 
         ObjectResponse<UbtAccountPo> res = new ObjectResponse<UbtAccountPo>(ret);
+        logger.info(LoggerHelper.formatLeaveLog(request));
+        return res;
+    }
+
+    @ApiOperation(value = "获取已注册Uid")
+    @GetMapping(value = "/getUidRegistry")
+    public ObjectResponse<UidRegistryPo> getUidRegistry(
+            HttpServletRequest request,
+            @ApiParam(value = "注册码") @RequestParam String registerCode,
+            @ApiParam(value = "用户二级ID") @RequestParam(required = false) String subUid) {
+        logger.info(LoggerHelper.formatEnterLog(request));
+
+        UidRegistryPo ret = this.uidRegistryDs.getUidRegistry(registerCode);
+
+        ObjectResponse<UidRegistryPo> res = new ObjectResponse<UidRegistryPo>(ret);
+        logger.info(LoggerHelper.formatLeaveLog(request));
+        return res;
+    }
+
+    @ApiOperation(value = "输入注册码和密码来注册Uid")
+    @GetMapping(value = "/registerUid")
+    public ObjectResponse<UidRegistryPo> registerUid(
+            HttpServletRequest request,
+            @ApiParam(value = "注册码") @RequestParam String registerCode,
+            @ApiParam(value = "小程序UID") @RequestParam String uid,
+            @ApiParam(value = "密码") @RequestParam String password,
+            @ApiParam(value = "用户二级ID") @RequestParam(required = false) String subUid) {
+        logger.info(LoggerHelper.formatEnterLog(request));
+
+        UidRegistryPo ret = this.uidRegistryDs.getUidRegistry(registerCode);
+
+
+        ObjectResponse<UidRegistryPo> res = new ObjectResponse<UidRegistryPo>(ret);
+
+        //handle all the error case;
+        if(ret == null){
+            res.setStatus(HyenaConstants.ERROR_REGISTER_CODE_NOT_FOUND);
+            res.setError(HyenaConstants.ERROR_1220);
+            return res;
+        }else if(ret.getEnable()) {
+            res.setStatus(HyenaConstants.ERROR_REGISTER_CODE_USED);
+            res.setError(HyenaConstants.ERROR_1210);
+            return res;
+        }else if(!StringUtils.equals(password,ret.getPassword())){
+            res.setStatus(HyenaConstants.ERROR_PASSWORD_NOT_MATCH);
+            res.setError((HyenaConstants.ERROR_1240));
+            return res;
+        }
+
+        this.uidRegistryDs.updateUidRegistry(registerCode,uid,password,true);
+        res.setStatus(HyenaConstants.RES_CODE_SUCCESS);
+
+        logger.info(LoggerHelper.formatLeaveLog(request));
+        return res;
+    }
+
+    @ApiOperation(value = "解绑Uid")
+    @GetMapping(value = "/deregisterUid")
+    public ObjectResponse<UidRegistryPo> DeregisterUid(
+            HttpServletRequest request,
+            @ApiParam(value = "注册码") @RequestParam String registerCode,
+            @ApiParam(value = "小程序UID") @RequestParam String uid,
+            @ApiParam(value = "密码") @RequestParam String password,
+            @ApiParam(value = "用户二级ID") @RequestParam(required = false) String subUid) {
+        logger.info(LoggerHelper.formatEnterLog(request));
+
+        UidRegistryPo ret = this.uidRegistryDs.getUidRegistry(registerCode);
+
+
+        ObjectResponse<UidRegistryPo> res = new ObjectResponse<UidRegistryPo>(ret);
+        if(ret == null){
+            res.setStatus(HyenaConstants.ERROR_REGISTER_CODE_NOT_FOUND);
+            res.setError(HyenaConstants.ERROR_1220);
+            return res;
+        }else if(!ret.getEnable()) {
+            res.setStatus(HyenaConstants.ERROR_REGISTER_CODE_ALREADY_DISABLED);
+            res.setError(HyenaConstants.ERROR_1230);
+            return res;
+        }else if(!StringUtils.equals(password,ret.getPassword()))
+        {
+            res.setStatus(HyenaConstants.ERROR_PASSWORD_NOT_MATCH);
+            res.setError(HyenaConstants.ERROR_1240);
+            return res;
+        }
+
+        //set uid as false when register code is disabled
+        this.uidRegistryDs.updateUidRegistry(registerCode,"",password,false);
+
+        res.setStatus(HyenaConstants.RES_CODE_SUCCESS);
+
         logger.info(LoggerHelper.formatLeaveLog(request));
         return res;
     }

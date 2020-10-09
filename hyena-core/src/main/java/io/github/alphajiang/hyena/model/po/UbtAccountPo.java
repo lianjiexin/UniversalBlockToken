@@ -28,7 +28,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class UbtAccountPo extends BasePo {
-    private String uid;
+    private String registerCode;
     private String blockchainAccount;
     private String priKey;
 }

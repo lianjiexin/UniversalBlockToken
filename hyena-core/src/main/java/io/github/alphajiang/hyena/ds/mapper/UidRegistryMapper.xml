@@ -1,0 +1,44 @@
+<!--
+
+  ~ record the mapping between UID and Register Code.
+  ~ Register code is distributed to user, who can bind and unbind it to a UID anytime
+  -->
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.alphajiang.hyena.ds.mapper.UidRegistryMapper">
+
+
+    <update id="createUidRegistryTable" flushCache="true">
+        create table if not exists t_uid_registry (
+        id bigint(20) not null auto_increment primary key,
+        `registerCode` varchar(128) not null,
+        `uid` varchar(128),
+        `password` varchar(128) not null,
+        `enable` boolean not null default false, <!-- false when no Uid is bind to the registerCode-->
+        `createTime` timestamp default now(),
+        `updateTime` timestamp default now(),
+        unique index t_uid_registry_key(`registerCode`)
+        ) engine=InnoDB default charset=utf8mb4
+    </update>
+
+    <insert id="insertOrUpdate" parameterType="io.github.alphajiang.hyena.model.po.UidRegistryPo">
+        insert into t_uid_registry(`registerCode`, `uid`, `password`, `enable`, createTime, updateTime)
+        values(#{registerCode}, #{uid}, #{password}, #{enable}, now(), now())
+        on duplicate key update
+        uid = #{uid},
+        password = #{password},
+        enable = #{enable},
+        updateTime = now()
+    </insert>
+    
+    <select id="getUidRegistry" resultType="io.github.alphajiang.hyena.model.po.UidRegistryPo">
+        select * from t_uid_registry where `registerCode`=#{registerCode}
+    </select>
+
+    <update id="updateUidRegistry" >
+        update t_uid_registry set `uid`=#{uid},`password`=#{password},`enable`=#{enable},
+        updateTime = now()
+        where `registerCode`=#{registerCode}
+    </update>
+</mapper>

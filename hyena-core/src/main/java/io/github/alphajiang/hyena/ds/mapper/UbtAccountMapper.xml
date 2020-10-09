@@ -19,23 +19,22 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="io.github.alphajiang.hyena.ds.mapper.UbtAccountMapper">
 
-
     <update id="createUbtAccountTable" flushCache="true">
         create table if not exists t_ubt_account (
         id bigint(20) not null auto_increment primary key,
-        `uid` varchar(128) not null,
+        `registerCode` varchar(128) not null,
         `blockchainAccount` varchar(128) not null,
         `priKey` varchar(256) not null ,
         `enable` boolean not null default true,
         `createTime` timestamp default now(),
         `updateTime` timestamp default now(),
-        unique index t_ubt_account_key(`uid`)
+        unique index t_ubt_account_key(`registerCode`)
         ) engine=InnoDB default charset=utf8mb4
     </update>
 
     <insert id="insertOrUpdate" parameterType="io.github.alphajiang.hyena.model.po.UbtAccountPo">
-        insert into t_ubt_account(`uid`, `blockchainAccount`, `priKey`, `enable`, createTime, updateTime)
-        values(#{uid}, #{blockchainAccount}, #{priKey}, #{enable}, now(), now())
+        insert into t_ubt_account(`registerCode`, `blockchainAccount`, `priKey`, `enable`, createTime, updateTime)
+        values(#{registerCode}, #{blockchainAccount}, #{priKey}, #{enable}, now(), now())
         on duplicate key update
         blockchainAccount = #{blockchainAccount},
         priKey = #{priKey},
@@ -44,12 +43,12 @@
     </insert>
     
     <select id="getUbtAccount" resultType="io.github.alphajiang.hyena.model.po.UbtAccountPo">
-        select * from t_ubt_account where `uid`=#{uid}
+        select * from t_ubt_account where `registerCode`=#{registerCode}
     </select>
 
     <update id="updateUbtAccount" >
-        update t_ubt_account set `blockchainAccount`=#{blockchainAccount},`priKey`=#{priKey}
+        update t_ubt_account set `blockchainAccount`=#{blockchainAccount},`priKey`=#{priKey},
         updateTime = now()
-        where `uid`=#{uid}
+        where `registerCode`=#{registerCode}
     </update>
 </mapper>

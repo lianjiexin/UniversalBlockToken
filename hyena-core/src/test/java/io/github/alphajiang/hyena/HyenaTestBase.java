@@ -22,7 +22,9 @@ import io.github.alphajiang.hyena.biz.point.PointUsageFacade;
 import io.github.alphajiang.hyena.ds.service.PointTableDs;
 import io.github.alphajiang.hyena.ds.service.SysPropertyDs;
 import io.github.alphajiang.hyena.ds.service.UbtAccountDs;
+import io.github.alphajiang.hyena.ds.service.UidRegistryDs;
 import io.github.alphajiang.hyena.model.po.PointPo;
+import io.github.alphajiang.hyena.model.po.UidRegistryPo;
 import io.github.alphajiang.hyena.utils.DecimalUtils;
 import io.github.alphajiang.hyena.utils.JsonUtils;
 import org.junit.jupiter.api.Assertions;
@@ -50,6 +52,9 @@ public abstract class HyenaTestBase {
     private UbtAccountDs ubtAccountDs;
 
     @Autowired
+    private UidRegistryDs uidRegistryDs;
+
+    @Autowired
     private PointTableDs pointTableDs;
 
     @Autowired
@@ -70,6 +75,9 @@ public abstract class HyenaTestBase {
 
     private PointPo userPoint;
 
+    private String registerCode;
+    private String password;
+
     public HyenaTestBase() {
         String random = UUID.randomUUID().toString().replace("-", "");
         this.pointType = random.substring(0, 6);
@@ -79,6 +87,8 @@ public abstract class HyenaTestBase {
         Map<String, Object> extra = new HashMap<>();
         extra.put("aaa", "bbbb");
         extra.put("ccc", 123L);
+        this.registerCode="abc";
+        this.password="123456";
         this.initialPointUsage = new PointUsage();
         this.initialPointUsage.setType(this.pointType).setTag(tag)
                 .setUid(this.uid).setSubUid(this.subUid)
@@ -92,6 +102,15 @@ public abstract class HyenaTestBase {
     public void init() {
         sysPropertyDs.createSysPropertyTable();
         ubtAccountDs.createUbtAccountTable();
+        uidRegistryDs.createUidRegistryTable();
+
+        UidRegistryPo uidRegistry = new UidRegistryPo();
+        uidRegistry.setEnable(true);
+        uidRegistry.setRegisterCode(this.registerCode);
+        uidRegistry.setPassword(this.password);
+        uidRegistry.setUid(this.uid);
+        uidRegistryDs.insertOrUpdate(uidRegistry);
+
         pointTableDs.getOrCreateTable(this.pointType);
 
 
@@ -102,6 +121,12 @@ public abstract class HyenaTestBase {
     }
 
 
+    public String getRegisterCode(){
+        return  this.registerCode;
+    }
+    public String getPassword(){
+        return this.password;
+    }
     public String getPointType() {
         return this.pointType;
     }

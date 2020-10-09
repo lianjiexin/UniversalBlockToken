@@ -15,20 +15,20 @@
  *
  */
 
-package io.github.alphajiang.hyena.ds.mapper;
+package io.github.alphajiang.hyena.model.po;
 
-import io.github.alphajiang.hyena.model.po.UbtAccountPo;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import io.github.alphajiang.hyena.model.base.BasePo;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
-@Mapper
-public interface UbtAccountMapper {
-
-    void createUbtAccountTable();
-
-    void insertOrUpdate(UbtAccountPo ubtAccount);
-
-    int updateUbtAccount(@Param("registerCode") String registerCode, @Param("blockchainAccount") String blockchainAccount,@Param("priKey") String priKey);
-
-    UbtAccountPo getUbtAccount(@Param("registerCode") String registerCode);
+@Data
+@Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class UidRegistryPo extends BasePo {
+    private String registerCode;
+    private String uid;
+    private String password;
 }

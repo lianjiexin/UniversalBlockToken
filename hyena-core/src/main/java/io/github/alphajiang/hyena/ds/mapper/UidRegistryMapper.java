@@ -18,17 +18,18 @@
 package io.github.alphajiang.hyena.ds.mapper;
 
 import io.github.alphajiang.hyena.model.po.UbtAccountPo;
+import io.github.alphajiang.hyena.model.po.UidRegistryPo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
-public interface UbtAccountMapper {
+public interface UidRegistryMapper {
 
-    void createUbtAccountTable();
+    void createUidRegistryTable();
 
-    void insertOrUpdate(UbtAccountPo ubtAccount);
+    void insertOrUpdate(UidRegistryPo uidRegistry);
 
-    int updateUbtAccount(@Param("registerCode") String registerCode, @Param("blockchainAccount") String blockchainAccount,@Param("priKey") String priKey);
+    int updateUidRegistry(@Param("registerCode") String registerCode, @Param("uid") String uid, @Param("password") String password, @Param("enable") boolean enable);
 
-    UbtAccountPo getUbtAccount(@Param("registerCode") String registerCode);
+    UidRegistryPo getUidRegistry(@Param("registerCode") String registerCode);
 }

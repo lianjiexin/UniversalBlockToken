@@ -17,37 +17,37 @@
 
 package io.github.alphajiang.hyena.ds.service;
 
-import io.github.alphajiang.hyena.ds.mapper.UbtAccountMapper;
-import io.github.alphajiang.hyena.model.po.UbtAccountPo;
+import io.github.alphajiang.hyena.ds.mapper.UidRegistryMapper;
+import io.github.alphajiang.hyena.model.po.UidRegistryPo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Repository
-public class UbtAccountDs {
+public class UidRegistryDs {
 
     @Autowired
-    private UbtAccountMapper ubtAccountMapper;
+    private UidRegistryMapper uidRegistryMapper;
 
-    public UbtAccountPo getUbtAccount(String registerCode) {
-        return this.ubtAccountMapper.getUbtAccount(registerCode);
+    public UidRegistryPo getUidRegistry(String registerCode) {
+        return this.uidRegistryMapper.getUidRegistry(registerCode);
     }
 
-    public void insertOrUpdate(UbtAccountPo ubtAccount)
+    public void insertOrUpdate(UidRegistryPo uidRegistry)
     {
-        this.ubtAccountMapper.insertOrUpdate(ubtAccount);
+        this.uidRegistryMapper.insertOrUpdate(uidRegistry);
     }
 
-    public int updateUbtAccount(@Param("registerCode") String registerCode, @Param("blockchainAccount") String blockchainAccount, @Param("priKey") String priKey)
+    public int updateUidRegistry(@Param("registerCode") String registerCode, @Param("uid") String uid,
+                                @Param("password") String password, @Param("enable") boolean enable)
     {
-        return this.ubtAccountMapper.updateUbtAccount(registerCode,blockchainAccount,priKey);
+        return this.uidRegistryMapper.updateUidRegistry(registerCode,uid,password,enable);
     }
 
 
-    public void createUbtAccountTable() {
-        this.ubtAccountMapper.createUbtAccountTable();
+    public void createUidRegistryTable() {
+        this.uidRegistryMapper.createUidRegistryTable();
     }
 }
