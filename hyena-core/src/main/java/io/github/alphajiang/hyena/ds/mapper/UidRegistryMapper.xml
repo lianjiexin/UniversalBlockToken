@@ -36,6 +36,10 @@
         select * from t_uid_registry where `registerCode`=#{registerCode}
     </select>
 
+    <select id="getUidRegistryByUid" resultType="io.github.alphajiang.hyena.model.po.UidRegistryPo">
+        select * from t_uid_registry where `uid`=#{uid}
+    </select>
+
     <update id="updateUidRegistry" >
         update t_uid_registry set `uid`=#{uid},`password`=#{password},`enable`=#{enable},
         updateTime = now()

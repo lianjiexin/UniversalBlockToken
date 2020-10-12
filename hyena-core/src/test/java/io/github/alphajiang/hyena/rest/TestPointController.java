@@ -108,6 +108,22 @@ public class TestPointController extends HyenaTestBase {
     }
 
     @Test
+    public void test_getUidRegistryByUid() throws Exception {
+
+        RequestBuilder builder = MockMvcRequestBuilders.get("/ubt/point/getUidRegistryByUid")
+                .param("uid", super.getUid());
+
+
+        String resBody = mockMvc.perform(builder).andReturn().getResponse().getContentAsString();
+        logger.info("response = {}", resBody);
+        ObjectResponse<UidRegistryPo> res = JsonUtils.fromJson(resBody, new TypeReference<ObjectResponse<UidRegistryPo>>() {
+
+        });
+        UidRegistryPo ret = res.getData();
+        Assertions.assertNotNull(ret);
+    }
+
+    @Test
     public void test_registerUid() throws Exception {
 
         RequestBuilder builder = MockMvcRequestBuilders.get("/ubt/point/registerUid")

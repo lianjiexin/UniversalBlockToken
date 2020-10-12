@@ -126,7 +126,7 @@ public class PointController {
         return res;
     }
 
-    @ApiOperation(value = "获取已注册Uid")
+    @ApiOperation(value = "根据注册码获取已注册对象，其中包含Uid,和注册码")
     @GetMapping(value = "/getUidRegistry")
     public ObjectResponse<UidRegistryPo> getUidRegistry(
             HttpServletRequest request,
@@ -135,6 +135,21 @@ public class PointController {
         logger.info(LoggerHelper.formatEnterLog(request));
 
         UidRegistryPo ret = this.uidRegistryDs.getUidRegistry(registerCode);
+
+        ObjectResponse<UidRegistryPo> res = new ObjectResponse<UidRegistryPo>(ret);
+        logger.info(LoggerHelper.formatLeaveLog(request));
+        return res;
+    }
+
+    @ApiOperation(value = "根据Uid获取已注册对象，其中包含Uid,和注册码")
+    @GetMapping(value = "/getUidRegistryByUid")
+    public ObjectResponse<UidRegistryPo> getUidRegistryByUid(
+            HttpServletRequest request,
+            @ApiParam(value = "uid") @RequestParam String uid,
+            @ApiParam(value = "用户二级ID") @RequestParam(required = false) String subUid) {
+        logger.info(LoggerHelper.formatEnterLog(request));
+
+        UidRegistryPo ret = this.uidRegistryDs.getUidRegistryByUid(uid);
 
         ObjectResponse<UidRegistryPo> res = new ObjectResponse<UidRegistryPo>(ret);
         logger.info(LoggerHelper.formatLeaveLog(request));

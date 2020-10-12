@@ -32,4 +32,7 @@ public interface UidRegistryMapper {
     int updateUidRegistry(@Param("registerCode") String registerCode, @Param("uid") String uid, @Param("password") String password, @Param("enable") boolean enable);
 
     UidRegistryPo getUidRegistry(@Param("registerCode") String registerCode);
+
+    UidRegistryPo getUidRegistryByUid(@Param("uid") String uid);
+
 }

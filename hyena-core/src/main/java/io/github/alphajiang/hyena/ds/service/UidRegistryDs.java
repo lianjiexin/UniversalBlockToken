@@ -35,6 +35,11 @@ public class UidRegistryDs {
         return this.uidRegistryMapper.getUidRegistry(registerCode);
     }
 
+    public UidRegistryPo getUidRegistryByUid(String uid) {
+        return this.uidRegistryMapper.getUidRegistryByUid(uid);
+    }
+
+
     public void insertOrUpdate(UidRegistryPo uidRegistry)
     {
         this.uidRegistryMapper.insertOrUpdate(uidRegistry);
