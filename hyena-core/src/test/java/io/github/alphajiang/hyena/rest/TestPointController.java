@@ -38,6 +38,7 @@ import io.github.alphajiang.hyena.model.vo.PointOpResult;
 import io.github.alphajiang.hyena.utils.CollectionUtils;
 import io.github.alphajiang.hyena.utils.DateUtils;
 import io.github.alphajiang.hyena.utils.JsonUtils;
+import io.github.alphajiang.hyena.wechat.WechatPayConnector;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -68,6 +69,9 @@ public class TestPointController extends HyenaTestBase {
 
     @Autowired
     private PointRecDs pointRecDs;
+
+    @Autowired
+    private WechatPayConnector wechatPayConnector;
 
 
     @BeforeEach

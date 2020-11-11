@@ -27,7 +27,7 @@ dependencies {
 
     implementation("io.springfox:springfox-swagger2:${swaggerVersion}")
     implementation("org.web3j:core:${web3jVersion}")
-
+    implementation("org.apache.httpcomponents:httpclient:${httpclientVersion}")
 
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
 
