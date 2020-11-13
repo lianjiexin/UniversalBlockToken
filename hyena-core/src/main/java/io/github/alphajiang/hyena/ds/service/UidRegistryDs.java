@@ -18,11 +18,16 @@
 package io.github.alphajiang.hyena.ds.service;
 
 import io.github.alphajiang.hyena.ds.mapper.UidRegistryMapper;
+import io.github.alphajiang.hyena.model.exception.DuplicateUidRegistrationException;
 import io.github.alphajiang.hyena.model.po.UidRegistryPo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 
 @Slf4j
 @Repository
@@ -48,7 +53,14 @@ public class UidRegistryDs {
     public int updateUidRegistry(@Param("registerCode") String registerCode, @Param("uid") String uid,
                                 @Param("password") String password, @Param("enable") boolean enable)
     {
-        return this.uidRegistryMapper.updateUidRegistry(registerCode,uid,password,enable);
+        try {
+            return this.uidRegistryMapper.updateUidRegistry(registerCode, uid, password, enable);
+        }catch(DuplicateKeyException ex)
+        {
+            String errorMsg = "UID （" + uid + "）是已经使用过的";
+                throw new DuplicateUidRegistrationException(errorMsg);
+
+        }
     }
 
 

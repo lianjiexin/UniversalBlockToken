@@ -32,6 +32,7 @@ public interface HyenaConstants {
     int ERROR_REGISTER_CODE_NOT_FOUND = -1220; // error code should be less than 0;
     int ERROR_REGISTER_CODE_ALREADY_DISABLED = -1230; // error code should be less than 0;
     int ERROR_PASSWORD_NOT_MATCH = -1240; // error code should be less than 0;
+    int ERROR_DUPLICATE_UID_REGISTRATION_ATTEMPT = -2200; // UID has to be unique for each register code
 
 
     int RES_CODE_SERVICE_BUSY = 1300;
@@ -52,4 +53,6 @@ public interface HyenaConstants {
     String ERROR_1220 = "注册码或密码输入错误";
     String ERROR_1230 = "注册码已经解绑，无法再次解绑";
     String ERROR_1240 = "密码不一致";
+
+    String ERROR_2200 = "同一UID不能绑定多个注册码，请更换UID.";
 }

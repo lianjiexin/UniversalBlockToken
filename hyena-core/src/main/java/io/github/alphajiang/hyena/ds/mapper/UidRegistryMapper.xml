@@ -18,7 +18,8 @@
         `enable` boolean not null default false, <!-- false when no Uid is bind to the registerCode-->
         `createTime` timestamp default now(),
         `updateTime` timestamp default now(),
-        unique index t_uid_registry_key(`registerCode`)
+        unique index t_uid_registry_key(`registerCode`),
+        constraint t_uid_registry_constraint unique (`uid`)
         ) engine=InnoDB default charset=utf8mb4
     </update>
 

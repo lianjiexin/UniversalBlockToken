@@ -19,6 +19,7 @@ package io.github.alphajiang.hyena;
 
 import io.github.alphajiang.hyena.model.base.BaseResponse;
 import io.github.alphajiang.hyena.model.exception.BaseException;
+import io.github.alphajiang.hyena.model.exception.DuplicateUidRegistrationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
@@ -30,6 +31,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.dao.DuplicateKeyException;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 
 @RestControllerAdvice
 public class HyenaExceptionHandler {
@@ -67,7 +71,17 @@ public class HyenaExceptionHandler {
             errorMsg = rtE.getMessage();
             logger.warn(exception.getMessage(), rtE);
             logger.info("请求参数错误: " + rtE.getMessage());
-        } else if (exception instanceof IllegalArgumentException) {
+        }
+
+        else if (exception instanceof DuplicateUidRegistrationException) {
+            BaseException exp = (BaseException) exception;
+            status = HyenaConstants.ERROR_DUPLICATE_UID_REGISTRATION_ATTEMPT;
+            errorMsg = HyenaConstants.ERROR_2200 + exp.getMessage() ;
+            logger.info("UID 重复: ");
+            this.logException(exp);
+
+        }
+        else if (exception instanceof IllegalArgumentException) {
             IllegalArgumentException rtE = (IllegalArgumentException) exception;
             status = HyenaConstants.RES_CODE_PARAMETER_ERROR;
             errorMsg = rtE.getMessage();
@@ -81,6 +95,7 @@ public class HyenaExceptionHandler {
 
 
         }
+
         else {
             logger.error("未定义异常: " + exception.getMessage(), exception);
             errorMsg = "系统异常, 请联系系统管理员";
