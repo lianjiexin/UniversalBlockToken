@@ -24,6 +24,7 @@ import io.github.alphajiang.hyena.biz.point.PointUsageBuilder;
 import io.github.alphajiang.hyena.biz.point.PointUsageFacade;
 import io.github.alphajiang.hyena.biz.point.strategy.PointMemCacheService;
 import io.github.alphajiang.hyena.ds.service.*;
+import io.github.alphajiang.hyena.exchange.StaticExchangeRate;
 import io.github.alphajiang.hyena.model.base.BaseResponse;
 import io.github.alphajiang.hyena.model.base.ListResponse;
 import io.github.alphajiang.hyena.model.base.ObjectResponse;
@@ -39,6 +40,8 @@ import io.github.alphajiang.hyena.model.type.SortOrder;
 import io.github.alphajiang.hyena.model.vo.PointLogBi;
 import io.github.alphajiang.hyena.model.vo.PointOpResult;
 import io.github.alphajiang.hyena.utils.*;
+import io.github.alphajiang.hyena.wechat.WechatPayConnector;
+import io.github.alphajiang.hyena.wechat.XmlToMapUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -55,6 +58,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -90,6 +94,9 @@ public class PointController {
 
     @Autowired
     private UidRegistryDs uidRegistryDs;
+
+    @Autowired
+    private WechatPayConnector wechatPayConnector;
 
     PointController()
     {
@@ -316,6 +323,7 @@ public class PointController {
         PointUsage usage = PointUsageBuilder.fromPointIncreaseParam(param);
         PointPo ret = this.pointUsageFacade.increase(usage);
 
+        /** Disable UBT sync for now
         if(StringUtils.equals(param.getType(),"ubt")){
             logger.info("Type is UBT, sync offline point to online");
             String uid = param.getUid();
@@ -324,6 +332,7 @@ public class PointController {
 
             ubtConnector.depositUBT(uid,value,18);
         }
+         **/
 
         ObjectResponse<PointPo> res = new ObjectResponse<>(ret);
         logger.info(LoggerHelper.formatLeaveLog(request));
@@ -369,11 +378,13 @@ public class PointController {
         usage.setRecId(param.getRecId());
         PointOpResult ret = this.pointUsageFacade.decrease(usage);
 
+        /** hold off UBT sync for now
         if(StringUtils.equals(param.getType(),"ubt")){
             logger.info("Type is UBT, sync offline point to online");
 
             ubtConnector.returnUBT(param.getUid(),param.getPoint(),18);
         }
+         **/
 
         ObjectResponse<PointOpResult> res = new ObjectResponse<>(ret);
         logger.info(LoggerHelper.formatLeaveLog(request));
@@ -381,6 +392,27 @@ public class PointController {
         return res;
     }
 
+    @ApiOperation(value = "人民币提现")
+    @PostMapping(value = "/withDrawRmb")
+    public BaseResponse withDrawRmb(HttpServletRequest request,
+                                    @RequestBody CashWithdrawParam param) throws Exception {
+        logger.info(LoggerHelper.formatEnterLog(request));
+        String openId = param.getOpenId();
+        BigDecimal point = param.getPoint();
+        String uid = param.getUid();
+        double exchangeRate = StaticExchangeRate.getExchangeRate("UBT","RMB");
+        BigDecimal cashAmount = point.multiply(new BigDecimal(exchangeRate));
+
+        logger.info("Withdraw RMB cash amount " + cashAmount);
+        String jsonStr = wechatPayConnector.withdrawCash(openId,cashAmount.toString());
+
+        //reduce the point first
+        ObjectResponse<PointOpResult> res = decreasePoint(request,param);
+
+        Map<String, String> responseMap = XmlToMapUtil.xmlToMap(jsonStr);
+
+        return new ObjectResponse<Map<String,String>>(responseMap);
+    }
 
     @Idempotent(name = "decreaseFrozen-point")
     @ApiOperation(value = "消费已冻结的用户积分")

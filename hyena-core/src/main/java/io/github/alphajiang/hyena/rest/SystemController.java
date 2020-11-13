@@ -25,12 +25,9 @@ import io.github.alphajiang.hyena.biz.point.strategy.PointMemCacheService;
 import io.github.alphajiang.hyena.ds.service.PointTableDs;
 import io.github.alphajiang.hyena.model.base.BaseResponse;
 import io.github.alphajiang.hyena.model.base.ListResponse;
-import io.github.alphajiang.hyena.model.param.CashWithdrawParam;
-import io.github.alphajiang.hyena.model.param.ListPointLogParam;
 import io.github.alphajiang.hyena.model.vo.QueueInfo;
 import io.github.alphajiang.hyena.utils.LoggerHelper;
 import io.github.alphajiang.hyena.utils.StringUtils;
-import io.github.alphajiang.hyena.wechat.WechatPayConnector;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -63,9 +60,6 @@ public class SystemController {
     @Autowired
     private QueueMonitor queueMonitor;
 
-    @Autowired
-    private WechatPayConnector wechatPayConnector;
-
     @ApiOperation(value = "获取积分类型列表")
     @GetMapping(value = "/listPointType")
     public ListResponse<String> listPointType(HttpServletRequest request) {
@@ -86,17 +80,6 @@ public class SystemController {
         logger.info(LoggerHelper.formatEnterLog(request));
         this.pointTableDs.getOrCreateTable(name);
         logger.info(LoggerHelper.formatLeaveLog(request));
-        return BaseResponse.success();
-    }
-
-    @ApiOperation(value = "人民币提现")
-    @PostMapping(value = "/withDrawRmb")
-    public BaseResponse withDrawRmb(HttpServletRequest request,
-                                    @RequestBody CashWithdrawParam param) throws Exception {
-        logger.info(LoggerHelper.formatEnterLog(request));
-        String openId = param.getOpenId();
-        String amount = param.getAmount();
-        wechatPayConnector.withdrawCash(openId,amount);
         return BaseResponse.success();
     }
 

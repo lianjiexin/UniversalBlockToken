@@ -30,11 +30,13 @@ import java.math.BigDecimal;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class CashWithdrawParam extends BaseObject {
+public class CashWithdrawParam extends PointDecreaseParam {
+
+    /**
+     * Decrease the point, and withdraw cash to the wechat account referred by openId;
+     */
     @ApiModelProperty(value = "微信OpenId", example = "")
     private String openId;
 
-    @ApiModelProperty(value = "提现数额", example = "amount")
-    private String amount;
 
 }
