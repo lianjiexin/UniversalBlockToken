@@ -18,6 +18,7 @@
 package io.github.alphajiang.hyena.rest;
 
 import io.github.alphajiang.hyena.HyenaConstants;
+import io.github.alphajiang.hyena.OrderTypeConstant;
 import io.github.alphajiang.hyena.aop.Idempotent;
 import io.github.alphajiang.hyena.biz.point.PointUsage;
 import io.github.alphajiang.hyena.biz.point.PointUsageBuilder;
@@ -294,7 +295,8 @@ public class PointController {
         logger.info("Withdraw RMB cash amount " + cashAmount);
         String jsonStr = wechatPayConnector.withdrawCash(openId,cashAmount.toString());
 
-        //reduce the point first
+        //reduce the point
+        param.setOrderType(OrderTypeConstant.RMB_WITH_DRAW);
         ObjectResponse<PointOpResult> res = decreasePoint(request,param);
 
         Map<String, String> responseMap = XmlToMapUtil.xmlToMap(jsonStr);
