@@ -230,7 +230,7 @@ public class PointController {
         }
 
         //set uid as false when register code is disabled
-        this.uidRegistryDs.updateUidRegistry(registerCode,"",password,false);
+        this.uidRegistryDs.updateUidRegistry(registerCode,null,password,false);
 
         res.setStatus(HyenaConstants.RES_CODE_SUCCESS);
 

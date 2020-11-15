@@ -1,0 +1,23 @@
+{
+  "name": "UB Token",
+  "timestamp": "2020-10-24T12:00:00+00:00",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "keywords": [
+    "uniswap",
+    "default",
+    "list"
+  ],
+  "tokens": [
+    {
+      "address": "0x5eF665e344f471BF09ef1Fe5c0B28d66C2Fe6F05",
+      "chainId": 1,
+      "name": "Universal Block Token",
+      "symbol": "UBT",
+      "decimals": 18
+    }
+  ]
+}
