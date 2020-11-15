@@ -34,6 +34,8 @@ public interface HyenaConstants {
     int ERROR_PASSWORD_NOT_MATCH = -1240; // error code should be less than 0;
     int ERROR_DUPLICATE_UID_REGISTRATION_ATTEMPT = -2200; // UID has to be unique for each register code
 
+    int ERROR_ILLEGAL_CASH_WITHDRAW_ATTEMPT = -3000; // illegal cash withdraw attempt
+
     int INFO_REGISTERCODE_EXIST_PASSWORD_UPDATED = 3200;
 
 

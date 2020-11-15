@@ -270,10 +270,20 @@ public class PointController {
         return res;
     }
 
+    @Idempotent(name = "withdraw-rmb")
     @ApiOperation(value = "人民币提现")
     @PostMapping(value = "/withDrawRmb")
     public BaseResponse withDrawRmb(HttpServletRequest request,
                                     @RequestBody CashWithdrawParam param) throws Exception {
+
+        String type = param.getType();
+        if(!StringUtils.isBlank(type) && !StringUtils.equals("ubt",type)){
+            BaseResponse ret = new BaseResponse();
+            ret.setStatus(HyenaConstants.ERROR_ILLEGAL_CASH_WITHDRAW_ATTEMPT);
+            ret.setError("Point Type " + type +" cannot be withdrawn.");
+            return ret;
+        }
+
         logger.info(LoggerHelper.formatEnterLog(request));
         String openId = param.getOpenId();
         BigDecimal point = param.getPoint();

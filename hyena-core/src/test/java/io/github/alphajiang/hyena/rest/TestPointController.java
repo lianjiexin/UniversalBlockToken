@@ -96,56 +96,6 @@ public class TestPointController extends HyenaTestBase {
     }
 
     @Test
-    public void test_getUidRegistry() throws Exception {
-
-        RequestBuilder builder = MockMvcRequestBuilders.get("/ubt/point/getUidRegistry")
-                .param("registerCode", super.getRegisterCode());
-
-
-        String resBody = mockMvc.perform(builder).andReturn().getResponse().getContentAsString();
-        logger.info("response = {}", resBody);
-        ObjectResponse<UidRegistryPo> res = JsonUtils.fromJson(resBody, new TypeReference<ObjectResponse<UidRegistryPo>>() {
-
-        });
-        UidRegistryPo ret = res.getData();
-        Assertions.assertNotNull(ret);
-    }
-
-    @Test
-    public void test_getUidRegistryByUid() throws Exception {
-
-        RequestBuilder builder = MockMvcRequestBuilders.get("/ubt/point/getUidRegistryByUid")
-                .param("uid", super.getUid());
-
-
-        String resBody = mockMvc.perform(builder).andReturn().getResponse().getContentAsString();
-        logger.info("response = {}", resBody);
-        ObjectResponse<UidRegistryPo> res = JsonUtils.fromJson(resBody, new TypeReference<ObjectResponse<UidRegistryPo>>() {
-
-        });
-        UidRegistryPo ret = res.getData();
-        Assertions.assertNotNull(ret);
-    }
-
-    @Test
-    public void test_registerUid() throws Exception {
-
-        RequestBuilder builder = MockMvcRequestBuilders.get("/ubt/point/registerUid")
-                .param("registerCode", super.getRegisterCode())
-                .param("uid",super.getUid())
-                .param("password",super.getPassword());
-
-
-        String resBody = mockMvc.perform(builder).andReturn().getResponse().getContentAsString();
-        logger.info("response = {}", resBody);
-        ObjectResponse<UidRegistryPo> res = JsonUtils.fromJson(resBody, new TypeReference<ObjectResponse<UidRegistryPo>>() {
-
-        });
-        UidRegistryPo ret = res.getData();
-        Assertions.assertNotNull(ret);
-    }
-
-    @Test
     public void test_listPoint() throws Exception {
 
         ListPointParam param = new ListPointParam();
@@ -184,6 +134,25 @@ public class TestPointController extends HyenaTestBase {
         BaseResponse res = JsonUtils.fromJson(resBody, BaseResponse.class);
 
         Assertions.assertFalse(res.getStatus() == HyenaConstants.RES_CODE_SUCCESS);
+    }
+
+    @Test
+    public void test_withDrawRmb() throws Exception {
+
+
+        CashWithdrawParam param = new CashWithdrawParam();
+        param.setType("invalid_type");
+
+
+        RequestBuilder builder = MockMvcRequestBuilders.post("/ubt/point/withDrawRmb")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtils.toJsonString(param));
+
+        String resBody = mockMvc.perform(builder).andReturn().getResponse().getContentAsString();
+        logger.info("response = {}", resBody);
+        BaseResponse res = JsonUtils.fromJson(resBody, BaseResponse.class);
+
+        Assertions.assertTrue(res.getStatus() == HyenaConstants.ERROR_ILLEGAL_CASH_WITHDRAW_ATTEMPT);
     }
 
     @Test

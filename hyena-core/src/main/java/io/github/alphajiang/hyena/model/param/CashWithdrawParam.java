@@ -24,6 +24,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 
 @Data
@@ -35,8 +36,10 @@ public class CashWithdrawParam extends PointDecreaseParam {
     /**
      * Decrease the point, and withdraw cash to the wechat account referred by openId;
      */
-    @ApiModelProperty(value = "微信OpenId", example = "")
+    @ApiModelProperty(value = "微信OpenId", example = "oxTWIuGaIt6gTKsQRLau2M0yL16E")
     private String openId;
+
+
 
 
 }
