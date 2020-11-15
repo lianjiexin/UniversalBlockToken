@@ -34,6 +34,8 @@ public interface HyenaConstants {
     int ERROR_PASSWORD_NOT_MATCH = -1240; // error code should be less than 0;
     int ERROR_DUPLICATE_UID_REGISTRATION_ATTEMPT = -2200; // UID has to be unique for each register code
 
+    int INFO_REGISTERCODE_EXIST_PASSWORD_UPDATED = 3200;
+
 
     int RES_CODE_SERVICE_BUSY = 1300;
     int RES_CODE_DUPLICATE = 2000;
@@ -55,4 +57,6 @@ public interface HyenaConstants {
     String ERROR_1240 = "密码不一致";
 
     String ERROR_2200 = "同一UID不能绑定多个注册码，请更换UID.";
+
+    String INFO_3200 = "注册码 (RegisterCode) 已经存在,密码（Password)被更新";
 }

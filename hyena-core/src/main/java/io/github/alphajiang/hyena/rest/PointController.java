@@ -69,10 +69,10 @@ public class PointController {
     private static final Logger logger = LoggerFactory.getLogger(PointController.class);
 
     @Autowired
-    private PointUsageFacade pointUsageFacade;
+    private PointDs pointDs;
 
     @Autowired
-    private PointDs pointDs;
+    private PointUsageFacade pointUsageFacade;
 
     @Autowired
     private PointLogDs pointLogDs;
@@ -91,9 +91,6 @@ public class PointController {
 
     @Autowired
     private UBTConnector ubtConnector;
-
-    @Autowired
-    private UidRegistryDs uidRegistryDs;
 
     @Autowired
     private WechatPayConnector wechatPayConnector;
@@ -118,125 +115,6 @@ public class PointController {
         return res;
     }
 
-    @ApiOperation(value = "获取UBT账户信息")
-    @GetMapping(value = "/getUbtAccount")
-    public ObjectResponse<UbtAccountPo> getUbtAccount(
-            HttpServletRequest request,
-            @ApiParam(value = "注册码") @RequestParam String registerCode,
-            @ApiParam(value = "用户二级ID") @RequestParam(required = false) String subUid) {
-        logger.info(LoggerHelper.formatEnterLog(request));
-
-        UbtAccountPo ret = this.ubtConnector.getUbtAccountPo(registerCode);
-
-        ObjectResponse<UbtAccountPo> res = new ObjectResponse<UbtAccountPo>(ret);
-        logger.info(LoggerHelper.formatLeaveLog(request));
-        return res;
-    }
-
-    @ApiOperation(value = "根据注册码获取已注册对象，其中包含Uid,和注册码")
-    @GetMapping(value = "/getUidRegistry")
-    public ObjectResponse<UidRegistryPo> getUidRegistry(
-            HttpServletRequest request,
-            @ApiParam(value = "注册码") @RequestParam String registerCode,
-            @ApiParam(value = "用户二级ID") @RequestParam(required = false) String subUid) {
-        logger.info(LoggerHelper.formatEnterLog(request));
-
-        UidRegistryPo ret = this.uidRegistryDs.getUidRegistry(registerCode);
-
-        ObjectResponse<UidRegistryPo> res = new ObjectResponse<UidRegistryPo>(ret);
-        logger.info(LoggerHelper.formatLeaveLog(request));
-        return res;
-    }
-
-    @ApiOperation(value = "根据Uid获取已注册对象，其中包含Uid,和注册码")
-    @GetMapping(value = "/getUidRegistryByUid")
-    public ObjectResponse<UidRegistryPo> getUidRegistryByUid(
-            HttpServletRequest request,
-            @ApiParam(value = "uid") @RequestParam String uid,
-            @ApiParam(value = "用户二级ID") @RequestParam(required = false) String subUid) {
-        logger.info(LoggerHelper.formatEnterLog(request));
-
-        UidRegistryPo ret = this.uidRegistryDs.getUidRegistryByUid(uid);
-
-        ObjectResponse<UidRegistryPo> res = new ObjectResponse<UidRegistryPo>(ret);
-        logger.info(LoggerHelper.formatLeaveLog(request));
-        return res;
-    }
-
-    @ApiOperation(value = "输入注册码和密码来注册Uid")
-    @GetMapping(value = "/registerUid")
-    public ObjectResponse<UidRegistryPo> registerUid(
-            HttpServletRequest request,
-            @ApiParam(value = "注册码") @RequestParam String registerCode,
-            @ApiParam(value = "小程序UID") @RequestParam String uid,
-            @ApiParam(value = "密码") @RequestParam String password,
-            @ApiParam(value = "用户二级ID") @RequestParam(required = false) String subUid) {
-        logger.info(LoggerHelper.formatEnterLog(request));
-
-        UidRegistryPo ret = this.uidRegistryDs.getUidRegistry(registerCode);
-
-
-        ObjectResponse<UidRegistryPo> res = new ObjectResponse<UidRegistryPo>(ret);
-
-        //handle all the error case;
-        if(ret == null){
-            res.setStatus(HyenaConstants.ERROR_REGISTER_CODE_NOT_FOUND);
-            res.setError(HyenaConstants.ERROR_1220);
-            return res;
-        }else if(ret.getEnable()) {
-            res.setStatus(HyenaConstants.ERROR_REGISTER_CODE_USED);
-            res.setError(HyenaConstants.ERROR_1210);
-            return res;
-        }else if(!StringUtils.equals(password,ret.getPassword())){
-            res.setStatus(HyenaConstants.ERROR_PASSWORD_NOT_MATCH);
-            res.setError((HyenaConstants.ERROR_1240));
-            return res;
-        }
-
-        this.uidRegistryDs.updateUidRegistry(registerCode,uid,password,true);
-        res.setStatus(HyenaConstants.RES_CODE_SUCCESS);
-
-        logger.info(LoggerHelper.formatLeaveLog(request));
-        return res;
-    }
-
-    @ApiOperation(value = "解绑Uid")
-    @GetMapping(value = "/deregisterUid")
-    public ObjectResponse<UidRegistryPo> DeregisterUid(
-            HttpServletRequest request,
-            @ApiParam(value = "注册码") @RequestParam String registerCode,
-            @ApiParam(value = "小程序UID") @RequestParam String uid,
-            @ApiParam(value = "密码") @RequestParam String password,
-            @ApiParam(value = "用户二级ID") @RequestParam(required = false) String subUid) {
-        logger.info(LoggerHelper.formatEnterLog(request));
-
-        UidRegistryPo ret = this.uidRegistryDs.getUidRegistry(registerCode);
-
-
-        ObjectResponse<UidRegistryPo> res = new ObjectResponse<UidRegistryPo>(ret);
-        if(ret == null){
-            res.setStatus(HyenaConstants.ERROR_REGISTER_CODE_NOT_FOUND);
-            res.setError(HyenaConstants.ERROR_1220);
-            return res;
-        }else if(!ret.getEnable()) {
-            res.setStatus(HyenaConstants.ERROR_REGISTER_CODE_ALREADY_DISABLED);
-            res.setError(HyenaConstants.ERROR_1230);
-            return res;
-        }else if(!StringUtils.equals(password,ret.getPassword()))
-        {
-            res.setStatus(HyenaConstants.ERROR_PASSWORD_NOT_MATCH);
-            res.setError(HyenaConstants.ERROR_1240);
-            return res;
-        }
-
-        //set uid as false when register code is disabled
-        this.uidRegistryDs.updateUidRegistry(registerCode,null,password,false);
-
-        res.setStatus(HyenaConstants.RES_CODE_SUCCESS);
-
-        logger.info(LoggerHelper.formatLeaveLog(request));
-        return res;
-    }
 
     @ApiOperation(value = "获取积分列表")
     @PostMapping(value = "/listPoint")
