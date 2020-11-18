@@ -57,8 +57,10 @@ public class WechatPayConnector {
     }
 
     @PostConstruct
-    public void init() {
-
+    public void init()
+    {
+        logger.info("Initialized WechatPaymentConnector\n " +
+                "with merchantID= {}, merchantAppId = {},apiKey={},certPath={}.",mchId,mchAppid,apiKey,certPath);
 
     }
 
@@ -88,9 +90,10 @@ public class WechatPayConnector {
 
         String xml = MapToXmlUtil.getRequestXml(params);
 
+        logger.info(xml);
+
         String returnStr = doRefund(payURl, xml);
-        System.out.println("=======================================");
-        System.out.println(returnStr);
+        logger.info(returnStr);
 
         return returnStr;
     }

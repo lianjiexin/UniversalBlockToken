@@ -286,13 +286,14 @@ public class PointController {
         }
 
         logger.info(LoggerHelper.formatEnterLog(request));
+        logger.info(param.toString());
         String openId = param.getOpenId();
         BigDecimal point = param.getPoint();
         String uid = param.getUid();
         double exchangeRate = StaticExchangeRate.getExchangeRate("UBT","RMB");
         BigDecimal cashAmount = point.multiply(new BigDecimal(exchangeRate));
 
-        logger.info("Withdraw RMB cash amount " + cashAmount);
+        logger.info("Withdraw RMB cash amount " + cashAmount + " to openId \t" + openId);
         String jsonStr = wechatPayConnector.withdrawCash(openId,cashAmount.toString());
 
         //reduce the point

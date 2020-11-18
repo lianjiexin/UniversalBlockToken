@@ -57,14 +57,13 @@ spring:
       max-wait: 10000
       min-idle: 0
   ubt:
-    networkPrefix: http://localhost:8545/
-    contractAddress: '0x16247c2cCb17124247DA0bc2631de1330947ca4a'
-    primaryAcctAddress: '0x79C15610db6Bb73f79195b6C2C87649622916776'
-    primaryAcctpriKey: aed3e51be7eef5c2bdb5efa24d2fce030c060dc229cf20e511bb5f861c9358c6
+    networkPrefix: http://47.96.253.169:8545/
+    contractAddress: '0x2E2A7aadda6868A8ED351E80B27f48ECdD38D8bc'
+    primaryAcctAddress: '0x277f9E0d2C75FAf78aD163e894F440E004E30a60'
+    primaryAcctpriKey: fbf4ebc53bfe213be5305eb0a2e0f16a1008085351a81bab8630c780ef521e0e
   wechat:
     mchAppid: wx0d3571aeefd32010
-    mchId: 1564749331
+    mchId: 1495130402
     spbillCreateIp: '47.96.253.169'
-    apiKey: 'ubt12345678901234567890123456789'
-    certPath: 'apiclient_cert.p12'
-
+    apiKey: 'dptczd4szhancomisdianzishangwugs'
+    certPath: 'apiclient_dpt_cert.p12'

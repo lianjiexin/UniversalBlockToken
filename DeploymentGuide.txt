@@ -1,0 +1,12 @@
+This is the deployment guide. Follow the steps below for a successful deployment.
+
+1. Run "Gradle Build" under the project root folder to build the artifacts.
+2. navigate to : hyena-spring-boot-starter-test/build/libsThis is the deployment guide. Follow the steps below for a successful deployment.
+3. You will find the following jar file: hyena-spring-boot-starter-test-0.0.21.jar. This is the jar file. SCP it into your prod host.
+4. copy 'config' folder  under the project root folder to prod host under the same folder as hyena-spring-boot-starter-test-0.0.21.jar.
+6. rename hyena-spring-boot-starter-test-0.0.21.jar to ubt.jar.  (You can back up older version of ubt.jar before the rename to keep historic versions") 
+7. Run the following cmd:
+	nohup java -jar ubt.jar 2>>output.log &
+   The execution will pick up the configuration values defined under config/application.yml.
+   For a value not existing in config/application.xml. The execution will take default value in the jar.
+8. Check https://ubt.kluvy.com/swagger-ui.html#/. See if the service is up. 
