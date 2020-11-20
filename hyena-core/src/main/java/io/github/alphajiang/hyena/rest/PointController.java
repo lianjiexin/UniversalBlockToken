@@ -35,8 +35,6 @@ import io.github.alphajiang.hyena.model.dto.PointRecLogDto;
 import io.github.alphajiang.hyena.model.exception.HyenaParameterException;
 import io.github.alphajiang.hyena.model.param.*;
 import io.github.alphajiang.hyena.model.po.PointPo;
-import io.github.alphajiang.hyena.model.po.UbtAccountPo;
-import io.github.alphajiang.hyena.model.po.UidRegistryPo;
 import io.github.alphajiang.hyena.model.type.SortOrder;
 import io.github.alphajiang.hyena.model.vo.PointLogBi;
 import io.github.alphajiang.hyena.model.vo.PointOpResult;
@@ -96,8 +94,7 @@ public class PointController {
     @Autowired
     private WechatPayConnector wechatPayConnector;
 
-    PointController()
-    {
+    PointController() {
 
     }
 
@@ -195,7 +192,7 @@ public class PointController {
     @ApiOperation(value = "增加用户积分")
     @PostMapping(value = "/increase")
     public ObjectResponse<PointPo> increasePoint(HttpServletRequest request,
-                                                 @RequestBody @NotNull PointIncreaseParam param) throws InterruptedException, ExecutionException,IOException {
+                                                 @RequestBody @NotNull PointIncreaseParam param) throws InterruptedException, ExecutionException, IOException {
         long startTime = System.nanoTime();
         logger.info(LoggerHelper.formatEnterLog(request, false) + " param = {}", param);
 
@@ -203,14 +200,14 @@ public class PointController {
         PointPo ret = this.pointUsageFacade.increase(usage);
 
         /** Disable UBT sync for now
-        if(StringUtils.equals(param.getType(),"ubt")){
-            logger.info("Type is UBT, sync offline point to online");
-            String uid = param.getUid();
-            BigDecimal value = param.getPoint();
-            logger.info("UID :" + uid + "\t value: " + value);
+         if(StringUtils.equals(param.getType(),"ubt")){
+         logger.info("Type is UBT, sync offline point to online");
+         String uid = param.getUid();
+         BigDecimal value = param.getPoint();
+         logger.info("UID :" + uid + "\t value: " + value);
 
-            ubtConnector.depositUBT(uid,value,18);
-        }
+         ubtConnector.depositUBT(uid,value,18);
+         }
          **/
 
         ObjectResponse<PointPo> res = new ObjectResponse<>(ret);
@@ -223,11 +220,11 @@ public class PointController {
     @ApiOperation(value = "创建用户帐号")
     @PostMapping(value = "/create")
     public ObjectResponse<PointPo> createAccount(HttpServletRequest request,
-                                                 @RequestBody @NotNull PointIncreaseParam param) throws InterruptedException, ExecutionException,IOException {
+                                                 @RequestBody @NotNull PointIncreaseParam param) throws InterruptedException, ExecutionException, IOException {
         long startTime = System.nanoTime();
         logger.info(LoggerHelper.formatEnterLog(request, false) + " param = {}", param);
 
-       //Create common point account，which won't have a subUid
+        //Create common point account，which won't have a subUid
         PointUsage usage = PointUsageBuilder.fromPointIncreaseParam(param);
         PointPo ret = this.pointUsageFacade.increase(usage);
 
@@ -250,7 +247,7 @@ public class PointController {
     @ApiOperation(value = "消费用户积分")
     @PostMapping(value = "/decrease")
     public ObjectResponse<PointOpResult> decreasePoint(HttpServletRequest request,
-                                                       @RequestBody PointDecreaseParam param) throws InterruptedException, ExecutionException,IOException {
+                                                       @RequestBody PointDecreaseParam param) throws InterruptedException, ExecutionException, IOException {
         long startTime = System.nanoTime();
         logger.info(LoggerHelper.formatEnterLog(request, false) + " param = {}", param);
         PointUsage usage = PointUsageBuilder.fromPointOpParam(param);
@@ -258,11 +255,11 @@ public class PointController {
         PointOpResult ret = this.pointUsageFacade.decrease(usage);
 
         /** hold off UBT sync for now
-        if(StringUtils.equals(param.getType(),"ubt")){
-            logger.info("Type is UBT, sync offline point to online");
+         if(StringUtils.equals(param.getType(),"ubt")){
+         logger.info("Type is UBT, sync offline point to online");
 
-            ubtConnector.returnUBT(param.getUid(),param.getPoint(),18);
-        }
+         ubtConnector.returnUBT(param.getUid(),param.getPoint(),18);
+         }
          **/
 
         ObjectResponse<PointOpResult> res = new ObjectResponse<>(ret);
@@ -278,10 +275,10 @@ public class PointController {
                                     @RequestBody CashWithdrawParam param) throws Exception {
 
         String type = param.getType();
-        if(!StringUtils.isBlank(type) && !StringUtils.equals("ubt",type)){
+        if (!StringUtils.isBlank(type) && !StringUtils.equals("ubt", type)) {
             BaseResponse ret = new BaseResponse();
             ret.setStatus(HyenaConstants.ERROR_ILLEGAL_CASH_WITHDRAW_ATTEMPT);
-            ret.setError("Point Type " + type +" cannot be withdrawn.");
+            ret.setError("Point Type " + type + " cannot be withdrawn.");
             return ret;
         }
 
@@ -290,19 +287,19 @@ public class PointController {
         String openId = param.getOpenId();
         BigDecimal point = param.getPoint();
         String uid = param.getUid();
-        double exchangeRate = StaticExchangeRate.getExchangeRate("UBT","RMB");
+        double exchangeRate = StaticExchangeRate.getExchangeRate("UBT", "RMB");
         BigDecimal cashAmount = point.multiply(new BigDecimal(exchangeRate));
 
         logger.info("Withdraw RMB cash amount " + cashAmount + " to openId \t" + openId);
-        String jsonStr = wechatPayConnector.withdrawCash(openId,cashAmount.toString());
+        String jsonStr = wechatPayConnector.withdrawCash(openId, cashAmount.toString());
 
         //reduce the point
         param.setOrderType(OrderTypeConstant.RMB_WITH_DRAW);
-        ObjectResponse<PointOpResult> res = decreasePoint(request,param);
+        ObjectResponse<PointOpResult> res = decreasePoint(request, param);
 
         Map<String, String> responseMap = XmlToMapUtil.xmlToMap(jsonStr);
 
-        return new ObjectResponse<Map<String,String>>(responseMap);
+        return new ObjectResponse<Map<String, String>>(responseMap);
     }
 
     @Idempotent(name = "decreaseFrozen-point")
@@ -374,7 +371,7 @@ public class PointController {
     @ApiOperation(value = "按积分块冻结")
     @PostMapping(value = "/freezeByRecId")
     public ObjectResponse<PointOpResult> freezeByRecId(HttpServletRequest request,
-                                                    @RequestBody PointFreezeByRecIdParam param) {
+                                                       @RequestBody PointFreezeByRecIdParam param) {
         logger.info(LoggerHelper.formatEnterLog(request, false) + " param = {}", param);
 //        if (param.getUnfreezePoint() != null && param.getUnfreezePoint() < 0L) {
 //            throw new HyenaParameterException("invalid parameter: unfreezePoint");

@@ -46,9 +46,11 @@ public class HyenaInitialization {
     @Autowired
     private UpgradeSchemaDs upgradeSchemaDs;
 
+    @Autowired
+    private ExchangeRateDs exchangeRateDs;
+
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationReady() {
-        log.info("application ready");
         sysPropertyDs.createSysPropertyTable();
 
         int dbSqlVer = this.upgradeSql();
@@ -58,6 +60,9 @@ public class HyenaInitialization {
 
         ubtAccountDs.createUbtAccountTable();
         uidRegistryDs.createUidRegistryTable();
+        exchangeRateDs.createExchangeRateTable();
+
+        log.info("application ready");
     }
 
     public int upgradeSql() {

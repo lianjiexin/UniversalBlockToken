@@ -38,6 +38,10 @@ public interface HyenaConstants {
 
     int INFO_REGISTERCODE_EXIST_PASSWORD_UPDATED = 3200;
 
+    int ERROR_SUPPORTED_EXCHANGE_RATE_PAIR = -4001;
+    int ERROR_NEGATIVE_RATE_NOT_SUPPORTED = -4002;
+
+
 
     int RES_CODE_SERVICE_BUSY = 1300;
     int RES_CODE_DUPLICATE = 2000;
@@ -59,6 +63,9 @@ public interface HyenaConstants {
     String ERROR_1240 = "密码不一致";
 
     String ERROR_2200 = "同一UID不能绑定多个注册码，请更换UID.";
+
+    String ERROR_4001 = "以上汇率对目前不支持";
+    String ERROR_4002 = "汇率不可以是负数";
 
     String INFO_3200 = "注册码 (RegisterCode) 已经存在,密码（Password)被更新";
 }
