@@ -288,16 +288,26 @@ public class PointController {
         BigDecimal point = param.getPoint();
         String uid = param.getUid();
         double exchangeRate = StaticExchangeRate.getExchangeRate("UBT", "RMB");
-        BigDecimal cashAmount = point.multiply(new BigDecimal(exchangeRate));
+        BigDecimal cashAmount = point.multiply(new BigDecimal(exchangeRate)).multiply(new BigDecimal(100));
+
+        cashAmount = cashAmount.setScale( 0, BigDecimal.ROUND_DOWN );
 
         logger.info("Withdraw RMB cash amount " + cashAmount + " to openId \t" + openId);
         String jsonStr = wechatPayConnector.withdrawCash(openId, cashAmount.toString());
 
-        //reduce the point
-        param.setOrderType(OrderTypeConstant.RMB_WITH_DRAW);
-        ObjectResponse<PointOpResult> res = decreasePoint(request, param);
-
         Map<String, String> responseMap = XmlToMapUtil.xmlToMap(jsonStr);
+
+
+        String returnCode = responseMap.get("return_code");
+        String resultCode = responseMap.get("result_code");
+
+        logger.info("return code: " + returnCode + ", result code: " + resultCode);
+
+        if(StringUtils.equals(returnCode,"SUCCESS") && StringUtils.equals(resultCode,"SUCCESS")){
+            //reduce the point
+            param.setOrderType(OrderTypeConstant.RMB_WITH_DRAW);
+            ObjectResponse<PointOpResult> res = decreasePoint(request, param);
+        }
 
         return new ObjectResponse<Map<String, String>>(responseMap);
     }
