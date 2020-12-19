@@ -61,7 +61,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @RestController
-@Api(value = "积分相关的接口", tags = "积分")
+@Api(value = "权证相关的接口", tags = "权证")
 @RequestMapping(value = "/ubt/point", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PointController {
 
