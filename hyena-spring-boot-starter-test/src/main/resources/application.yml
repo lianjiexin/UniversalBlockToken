@@ -24,6 +24,10 @@ logging:
 
 hyena:
   idempotent: redis
+  cors:
+    # Browser origins allowed to call /hyena/**, comma separated.
+    # http://localhost:8081 is the wallet-app web dev server (npx expo start --web).
+    allowed-origins: http://localhost:8081
 
 
 

@@ -7,6 +7,8 @@
 [![License](https://img.shields.io/github/license/alphajiang/hyena.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 用户余额/积分微服务
+
+> **Wallet app (web, Android, iOS):** see [wallet-app/README.md](wallet-app/README.md).
 ## 积分相关接口
 更多接口介绍可查看swagger文档. swagger-ui的访问URL /swagger-ui.html
  
